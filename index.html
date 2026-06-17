@@ -106,6 +106,8 @@
     <div id="menu-list"></div>
     <div id="recipe-detail" class="hidden"></div>
     <script>
+        // const 表示定义一个常量
+        // recipes 是一个数组，用来存储所有菜谱
         const recipes = [
             {
                 id: 1,
@@ -136,19 +138,24 @@
             },
             {
                 id: 2,
-                name: "番茄炒蛋",
-                cookTime: "15分钟",
-                image: "https://picsum.photos/500/300?random=2",
+                name: "蚝油生菜",
+                cookTime: "10分钟",
+                image: "images/HYSC.jpg",
                 ingredients: [
-                    { name: "番茄", amount: "2个" },
-                    { name: "鸡蛋", amount: "3个" }
+                    { name: "生菜", amount: "2颗" },
+                    { name: "大蒜", amount: "少量" },
+                    { name: "生抽", amount: "2勺" },
+                    { name: "蚝油", amount: "1勺" },
+                    { name: "盐", amount: "少许" },
                 ],
                 steps: [
-                    "鸡蛋打散",
-                    "炒熟后盛出",
-                    "番茄切块翻炒",
-                    "加入鸡蛋",
-                    "翻炒均匀后出锅",
+                    "水烧开，下生菜煮软，捞出沥干水分摆盘。",
+                    "调个料汁：生抽2勺、蚝油1勺、盐少许、小半碗水搅拌均匀",
+                    "锅里倒适量油，放蒜末炒香，倒入料汁",
+                    "料汁烧开后，淋在生菜上即可。"
+                ],
+                notes: [
+                    "喜欢吃辣的可以再加点小米辣。"
                 ]
             },
             {
@@ -169,6 +176,7 @@
                 ]
             }
         ];
+        // 获取 id 为 menu-list 的元素
         const menuList = document.getElementById("menu-list");
         recipes.forEach(recipe => {
             const card = document.createElement("div");
