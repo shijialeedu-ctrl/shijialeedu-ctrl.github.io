@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的菜单</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #menu-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .card {
+            width: 260px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            transition: 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .card-content {
+            padding: 12px;
+        }
+        .card h3 {
+            margin: 0 0 10px 0;
+            text-align: center;
+        }
+        .cook-time {
+            color: #e67e22;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .ingredient-count {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .ingredient-preview {
+            color: #888;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        #recipe-detail {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+        #recipe-detail img {
+            width: 100%;
+            max-width: 500px;
+            display: block;
+            margin: 20px auto;
+            border-radius: 10px;
+        }
+        #recipe-detail ul,
+        #recipe-detail ol {
+            line-height: 1.8;
+        }
+        button {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .hidden {
+            display: none;
+        }
+        @media (max-width: 600px) {
+            .card {
+                width: 45%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🍳 我的菜单</h1>
+    <div id="menu-list"></div>
+    <div id="recipe-detail" class="hidden"></div>
+    <script>
+        const recipes = [
+            {
+                id: 1,
+                name: "番茄炒蛋",
+                cookTime: "15分钟",
+                image: "images/FQCD.jpg",
+                ingredients: [
+                    { name: "鸡蛋", amount: "3个" },
+                    { name: "番茄", amount: "2个" },
+                    { name: "盐", amount: "适量" },
+                    { name: "糖", amount: "少许" },
+                    { name: "葱", amount: "适量" },
+                    { name: "生抽", amount: "半勺" }
+                ],
+                steps: [
+                    "准备鸡蛋液：将鸡蛋打入碗中，加入适量的盐，用筷子打散，搅拌均匀。",
+                    "切番茄：将番茄洗净后放入热水烫两分钟去皮，切成小块，去掉蒂部。",
+                    "炒鸡蛋：在锅中加入适量的食用油，油热后倒入鸡蛋液，待鸡蛋液开始凝固时，用铲子轻轻翻炒，直到鸡蛋完全凝固，但不要炒得太老，然后盛出备用。",
+                    "炒番茄：锅中留少许油，放入葱花爆香，放入番茄块，加入适量的盐、糖（如果喜欢）和大半勺生抽，用中火翻炒，直到番茄出汁，变得软烂。",
+                    "混合炒制：将炒好的鸡蛋倒回锅中，与番茄一起翻炒，让鸡蛋吸收番茄的汁水，炒至均匀",
+                    "出锅装盘：最后撒上葱花，翻炒均匀后即可出锅装盘",
+                ],
+                notes: [
+                    "炒鸡蛋时油温不宜过高，以免鸡蛋炒老。",
+                    "番茄炒至出汁后，味道会更加浓郁。",
+                    "可以根据个人口味调整盐和糖的量。"
+                ]
+            },
+            {
+                id: 2,
+                name: "番茄炒蛋",
+                cookTime: "15分钟",
+                image: "https://picsum.photos/500/300?random=2",
+                ingredients: [
+                    { name: "番茄", amount: "2个" },
+                    { name: "鸡蛋", amount: "3个" }
+                ],
+                steps: [
+                    "鸡蛋打散",
+                    "炒熟后盛出",
+                    "番茄切块翻炒",
+                    "加入鸡蛋",
+                    "翻炒均匀后出锅",
+                ]
+            },
+            {
+                id: 3,
+                name: "可乐鸡翅",
+                cookTime: "30分钟",
+                image: "https://picsum.photos/500/300?random=3",
+                ingredients: [
+                    { name: "鸡翅", amount: "500g" },
+                    { name: "可乐", amount: "1瓶" }
+                ],
+                steps: [
+                    "鸡翅焯水",
+                    "煎至两面金黄",
+                    "加入可乐",
+                    "中火炖煮",
+                    "收汁后出锅"
+                ]
+            }
+        ];
+        const menuList = document.getElementById("menu-list");
+        recipes.forEach(recipe => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+                <img src="${recipe.image}">
+                <div class="card-content">
+                    <h3>${recipe.name}</h3>
+                    <div class="cook-time">
+                        ⏱ 制作时间：${recipe.cookTime}
+                    </div>
+                    <div class="ingredient-count">
+                        🥗 配料种类：${recipe.ingredients.length}种
+                    </div>
+                    <div class="ingredient-preview">
+                        ${recipe.ingredients
+                            .map(item => item.name)
+                            .join("、")}
+                    </div>
+                </div>
+            `;
+            card.onclick = () => {
+                showRecipe(recipe.id);
+            };
+            menuList.appendChild(card);
+        });
+        function showRecipe(id) {
+            const recipe =
+                recipes.find(r => r.id === id);
+            const detail =
+                document.getElementById("recipe-detail");
+            detail.innerHTML = `
+                <h2>${recipe.name}</h2>
+                <p>⏱ 制作时间：${recipe.cookTime}</p>
+                <img src="${recipe.image}">
+                <h3>🥗 食材</h3>
+                <ul>
+                    ${recipe.ingredients.map(item => `
+                        <li>${item.name}：${item.amount}</li>
+                    `).join("")}
+                </ul>
+                <h3>👨‍🍳 制作步骤</h3>
+                <ol>
+                    ${recipe.steps.map(step => `
+                        <li>${step}</li>
+                    `).join("")}
+                </ol>
+                <h3>⚠️ 注意事项</h3>
+                <ul>
+                    ${recipe.notes
+                        ? recipe.notes.map(note => `
+                            <li>${note}</li>
+                        `).join("")
+                        : "<li>暂无注意事项</li>"
+                    }
+                </ul>
+                <button onclick="backMenu()">
+                    返回菜单
+                </button>
+            `;
+            menuList.style.display = "none";
+            detail.classList.remove("hidden");
+        }
+        function backMenu() {
+            menuList.style.display = "flex";
+            document
+                .getElementById("recipe-detail")
+                .classList.add("hidden");
+        }
+    </script>
+</body>
+</html>
