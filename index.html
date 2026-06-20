@@ -1,261 +1,398 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的菜单</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        #menu-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
-        .card {
-            width: 260px;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-            transition: 0.3s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        .card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-        }
-        .card-content {
-            padding: 12px;
-        }
-        .card h3 {
-            margin: 0 0 10px 0;
-            text-align: center;
-        }
-        .cook-time {
-            color: #e67e22;
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-        .ingredient-count {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-        .ingredient-preview {
-            color: #888;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-        #recipe-detail {
-            max-width: 800px;
-            margin: auto;
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-        }
-        #recipe-detail img {
-            width: 100%;
-            max-width: 500px;
-            display: block;
-            margin: 20px auto;
-            border-radius: 10px;
-        }
-        #recipe-detail ul,
-        #recipe-detail ol {
-            line-height: 1.8;
-        }
-        button {
-            padding: 10px 20px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        button:hover {
-            background: #45a049;
-        }
-        .hidden {
-            display: none;
-        }
-        @media (max-width: 600px) {
-            .card {
-                width: 45%;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的菜单</title>
+<style>
+body{
+    font-family: Arial,sans-serif;
+    margin:0;
+    padding:20px;
+    background:#f5f5f5;
+}
+h1{
+    text-align:center;
+}
+.filter-box{
+    text-align:center;
+    margin-bottom:25px;
+}
+.filter-btn{
+    padding:8px 18px;
+    margin:5px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    background:#ddd;
+}
+.filter-btn.active{
+    background:#4CAF50;
+    color:white;
+}
+#menu-list{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+}
+.card{
+    width:260px;
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    cursor:pointer;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+    transition:.3s;
+}
+.card:hover{
+    transform:translateY(-5px);
+}
+.card img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+.card-content{
+    padding:12px;
+}
+.card h3{
+    text-align:center;
+    margin:0 0 10px;
+}
+.category{
+    color:#e74c3c;
+    font-size:14px;
+    margin-bottom:5px;
+}
+.cook-time{
+    color:#e67e22;
+    font-size:14px;
+    margin-bottom:5px;
+}
+.ingredient-count{
+    color:#666;
+    font-size:14px;
+}
+#recipe-detail{
+    max-width:800px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+#recipe-detail img{
+    width:100%;
+    max-width:500px;
+    display:block;
+    margin:auto;
+    border-radius:10px;
+}
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+.back-btn{
+    background:#4CAF50;
+    color:white;
+    margin-top:20px;
+}
+.hidden{
+    display:none;
+}
+</style>
 </head>
 <body>
-    <h1>🍳 我的菜单</h1>
-    <div id="menu-list"></div>
-    <div id="recipe-detail" class="hidden"></div>
-    <script>
-        // const 表示定义一个常量
-        // recipes 是一个数组，用来存储所有菜谱
-        const recipes = [
-            {
-                id: 1,
-                name: "番茄炒蛋",
-                cookTime: "15分钟",
-                image: "images/FQCD.jpg",
-                ingredients: [
-                    { name: "鸡蛋", amount: "3个" },
-                    { name: "番茄", amount: "2个" },
-                    { name: "盐", amount: "适量" },
-                    { name: "糖", amount: "少许" },
-                    { name: "葱", amount: "适量" },
-                    { name: "生抽", amount: "半勺" }
-                ],
-                steps: [
-                    "准备鸡蛋液：将鸡蛋打入碗中，加入适量的盐，用筷子打散，搅拌均匀。",
-                    "切番茄：将番茄洗净后放入热水烫两分钟去皮，切成小块，去掉蒂部。",
-                    "炒鸡蛋：在锅中加入适量的食用油，油热后倒入鸡蛋液，待鸡蛋液开始凝固时，用铲子轻轻翻炒，直到鸡蛋完全凝固，但不要炒得太老，然后盛出备用。",
-                    "炒番茄：锅中留少许油，放入葱花爆香，放入番茄块，加入适量的盐、糖（如果喜欢）和大半勺生抽，用中火翻炒，直到番茄出汁，变得软烂。",
-                    "混合炒制：将炒好的鸡蛋倒回锅中，与番茄一起翻炒，让鸡蛋吸收番茄的汁水，炒至均匀",
-                    "出锅装盘：最后撒上葱花，翻炒均匀后即可出锅装盘",
-                ],
-                notes: [
-                    "炒鸡蛋时油温不宜过高，以免鸡蛋炒老。",
-                    "番茄炒至出汁后，味道会更加浓郁。",
-                    "可以根据个人口味调整盐和糖的量。"
-                ]
-            },
-            {
-                id: 2,
-                name: "蚝油生菜",
-                cookTime: "10分钟",
-                image: "images/HYSC.jpg",
-                ingredients: [
-                    { name: "生菜", amount: "2颗" },
-                    { name: "大蒜", amount: "少量" },
-                    { name: "生抽", amount: "2勺" },
-                    { name: "蚝油", amount: "1勺" },
-                    { name: "盐", amount: "少许" }
-                ],
-                steps: [
-                    "水烧开，下生菜煮软，捞出沥干水分摆盘。",
-                    "调个料汁：生抽2勺、蚝油1勺、盐少许、小半碗水搅拌均匀。",
-                    "锅里倒适量油，放蒜末炒香，倒入料汁。",
-                    "料汁烧开后，淋在生菜上即可。"
-                ],
-                notes: [
-                    "喜欢吃辣的可以再加点小米辣。"
-                ]
-            },
-            {
-                id: 3,
-                name: "香煎脆皮豆腐",
-                cookTime: "15分钟",
-                image: "images/XJCPDF.jpg",
-                ingredients: [
-                    { name: "豆腐", amount: "约300g" },
-                    { name: "大蒜", amount: "3瓣" },
-                    { name: "小葱", amount: "1根" },
-                    { name: "生抽", amount: "1勺" },
-                    { name: "蚝油", amount: "半勺" },
-                    { name: "盐", amount: "少许" },
-                    { name: "白胡椒", amount: "少许" },
-                    { name: "淀粉", amount: "1勺" }
-                ],
-                steps: [
-                    "豆腐先切成厚约1.5cm的小块，用厨房纸轻轻按压吸干表面水分，这一步能减少溅油，也能让外皮更脆。",
-                    "碗里放生抽、蚝油、白胡椒和清水搅匀，倒在豆腐上轻轻翻拌，让每块都裹上酱汁，腌5分钟。",
-                    "腌好的豆腐表面撒一层薄薄的淀粉，多余的轻轻抖掉。平底锅冷油小火铺开豆腐，保持中小火慢煎。看到边缘变金黄再翻面，耐心煎到两面金黄微焦。",
-                    "豆腐推到一边，下入蒜末小火炒香，再把豆腐翻拌几下，让蒜香均匀裹在表面，尝一下咸度，不够再少量加盐，最后撒上葱花关火。"
-                ],
-                notes: [
-                    "豆腐一定要先吸干水分。",
-                    "淀粉只裹薄薄一层就够。",
-                    "全程中小火慢煎，不要频繁翻动。"
-                ]
-            }
-        ];
-        // 获取 id 为 menu-list 的元素
-        const menuList = document.getElementById("menu-list");
-        recipes.forEach(recipe => {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.innerHTML = `
-                <img src="${recipe.image}">
-                <div class="card-content">
-                    <h3>${recipe.name}</h3>
-                    <div class="cook-time">
-                        ⏱ 制作时间：${recipe.cookTime}
-                    </div>
-                    <div class="ingredient-count">
-                        🥗 配料种类：${recipe.ingredients.length}种
-                    </div>
-                    <div class="ingredient-preview">
-                        ${recipe.ingredients
-                            .map(item => item.name)
-                            .join("、")}
-                    </div>
-                </div>
-            `;
-            card.onclick = () => {
-                showRecipe(recipe.id);
-            };
-            menuList.appendChild(card);
+<h1>🍳 我的菜单</h1>
+<div class="filter-box">
+    <button class="filter-btn active" onclick="filterRecipes('全部')">
+        全部
+    </button>
+    <button class="filter-btn" onclick="filterRecipes('荤菜')">
+        荤菜
+    </button>
+    <button class="filter-btn" onclick="filterRecipes('素菜')">
+        素菜
+    </button>
+</div>
+<div id="menu-list"></div>
+<div id="recipe-detail" class="hidden"></div>
+<script>
+const recipes = [
+{
+    id:1,
+    name:"番茄炒蛋",
+    category:"荤菜",
+    cookTime:"15分钟",
+    image:"images/FQCD.jpg",
+    mainIngredients:[
+        { name:"鸡蛋", amount:"4个" },
+        { name:"番茄", amount:"1个" }
+    ],
+    seasonings:[
+        { name:"盐", amount:"适量" },
+        { name:"生抽", amount:"半勺" }
+    ],
+    steps:[
+        "准备鸡蛋液：将鸡蛋打入碗中，加入少量的盐，用筷子打散，搅拌均匀。",
+        "切番茄：将番茄洗净后切成小块，去掉蒂部。",
+        "炒鸡蛋：在锅中加入适量的食用油，油热后倒入鸡蛋液，待鸡蛋液开始凝固时，用铲子轻轻翻炒，直到鸡蛋完全凝固，但不要炒得太老，然后盛出备用。",
+        "炒番茄：锅中加入少许油，油热后放入番茄块，加入适量的盐（小半勺）和大半勺生抽，用中火翻炒，直到番茄出汁，变得软烂。",
+        "混合炒制：将炒好的鸡蛋倒回锅中，与番茄一起翻炒，让鸡蛋吸收番茄的汁水，炒至均匀。",
+        "出锅装盘：翻炒均匀后即可出锅装盘。"
+    ],
+    notes:[
+        "炒鸡蛋不要火太大。",
+        "番茄炒出汁味道更好。"
+    ]
+},
+{
+    id:2,
+    name:"蚝油生菜",
+    category:"素菜",
+    cookTime:"15分钟",
+    image:"images/HYSC.jpg",
+    mainIngredients:[
+        { name:"生菜", amount:"2颗" },
+        { name:"大蒜", amount:"2瓣" }
+    ],
+    seasonings:[
+        { name:"生抽", amount:"2勺" },
+        { name:"蚝油", amount:"1勺" },
+        { name:"盐", amount: "适量" }
+    ],
+    steps:[
+        "水中加几滴油和少量盐烧开，下生菜煮软，捞出沥干水分摆盘。",
+        "调个料汁：生抽2勺、蚝油1勺、盐小半勺、小半碗水搅拌均匀。",
+        "锅里倒适量油，油热后放蒜末炒香，倒入料汁。",
+        "料汁烧开后，淋在生菜上即可。"
+    ],
+    notes:[
+        "水中加几滴油和少量盐可以使煮熟后生菜颜色更绿并保留底味。"
+    ]
+},
+{
+    id:3,
+    name:"香煎脆皮豆腐",
+    category:"素菜",
+    cookTime:"15分钟",
+    image:"images/XJCPDF.jpg",
+    mainIngredients:[
+        { name:"豆腐", amount:"约300g" },
+        { name:"大蒜", amount:"3瓣" },
+        { name:"小葱", amount:"1根" }
+    ],
+    seasonings:[
+        { name:"生抽", amount:"1勺" },
+        { name:"蚝油", amount:"半勺"},
+        { name:"盐", amount: "少许" },
+        { name: "白胡椒", amount: "少许" },
+        { name: "淀粉", amount: "1勺" }        
+    ],
+    steps:[
+        "豆腐先切成厚约1.5cm的小块，用厨房纸轻轻按压吸干表面水分，这一步能减少溅油，也能让外皮更脆。",
+        "碗里放生抽、蚝油、白胡椒和清水搅匀，倒在豆腐上轻轻翻拌，让每块都裹上酱汁，腌5分钟。",
+        "腌好的豆腐表面撒一层薄薄的淀粉，多余的轻轻抖掉。平底锅冷油小火铺开豆腐，保持中小火慢煎。看到边缘变金黄再翻面，耐心煎到两面金黄微焦。",
+        "豆腐推到一边，下入蒜末小火炒香，再把豆腐翻拌几下，让蒜香均匀裹在表面，尝一下咸度，不够再少量加盐，最后撒上葱花关火。"
+    ],
+    notes:[
+        "豆腐一定要先吸干水分。",
+        "淀粉只裹薄薄一层就够。",
+        "全程中小火慢煎，不要频繁翻动。"
+    ]
+},
+{
+    id:4,
+    name:"金钱蛋",
+    category:"荤菜",
+    cookTime:"15分钟",
+    image:"images/JQD.jpg",
+    mainIngredients:[
+        { name: "鸡蛋", amount: "4个" },
+        { name: "小青辣椒", amount: "1个" },
+        { name: "小红辣椒", amount: "1个" },
+        { name: "大蒜", amount: "2瓣" }
+    ],
+    seasonings:[
+        { name: "生抽", amount: "2勺" },
+        { name: "蚝油", amount: "半勺" },
+        { name: "料酒", amount: "半勺" },
+        { name: "清水", amount: "3勺" },
+        { name: "胡椒粉", amount: "少许" }       
+    ],
+    steps:[
+        "料汁：生抽2勺、蚝油半勺、料酒半勺、胡椒粉少许、清水3勺。",
+        "鸡蛋冷水下锅，水开后煮10分钟，捞出过凉水，剥壳超轻松！将鸡蛋切成2cm厚的圆片。",
+        "锅中倒油，油热后转中小火，下入鸡蛋片，煎至两面金黄微焦，捞出备用。",
+        "重新起锅烧油，油热后下蒜末+切好的青红辣椒段，大火翻炒出香辣味。",
+        "倒入煎好的金钱蛋。",
+        "淋入提前调好的料汁，轻轻翻动，转小火煮1min，让蛋片充分吸满酱汁，即可出锅。"
+    ],
+    notes:[
+        "无。"
+    ]
+},
+{
+    id:5,
+    name:"宫保鸡丁",
+    category:"荤菜",
+    cookTime:"30分钟",
+    image:"images/GBJD.jpg",
+    mainIngredients:[
+        { name: "鸡胸肉", amount: "1块" },
+        { name: "胡萝卜", amount: "1根" },
+        { name: "黄瓜", amount: "1根" },
+        { name: "葱", amount: "1段" },
+        { name: "蒜", amount: "2瓣" },
+        { name: "小辣椒", amount: "1根" }
+    ],
+    seasonings:[
+        { name: "生抽", amount: "2勺" },
+        { name: "香醋", amount: "2勺" },
+        { name: "料酒", amount: "1勺" },
+        { name: "蚝油", amount: "1勺" },
+        { name: "白糖", amount: "半勺" },
+        { name: "淀粉", amount: "2勺" },
+        { name: "盐", amount: "适量" },
+        { name: "黑胡椒粉", amount: "适量" },
+        { name: "豆瓣酱", amount: "1勺" },
+        { name: "清水", amount: "半碗" }       
+    ],
+    steps:[
+        "鸡胸肉切丁，加1勺料酒、少许盐、少许黑胡椒粉和1勺淀粉进行腌制15min。",
+        "黄瓜和胡萝卜洗净切丁备用。",
+        "料汁：2勺生抽、2勺香醋、1勺蚝油、半勺白糖、1勺淀粉和半碗清水拌匀。",                    
+        "锅中少油，倒入腌好的鸡胸肉炒熟盛出备用。",
+        "锅中加入适量油，油热加入葱、蒜、辣椒炒香。",
+        "加入胡萝卜和黄瓜炒软，加入一勺豆瓣酱。炒出红油加鸡胸肉。",
+        "翻炒，最后导入调好的料汁。",
+        "大火翻炒至浓稠，即可出锅。"
+    ],
+    notes:[
+        "无。"
+    ]
+},
+];
+const menuList =
+document.getElementById("menu-list");
+function renderRecipes(list){
+    menuList.innerHTML="";
+    list.forEach(recipe=>{
+        const card =
+        document.createElement("div");
+        card.className="card";
+        card.innerHTML=`
+            <img src="${recipe.image}">
+            <div class="card-content">
+            <h3>${recipe.name}</h3>
+            <div class="category">
+                🍱 分类：${recipe.category}
+            </div>
+            <div class="cook-time">
+                ⏱ 制作时间：${recipe.cookTime}
+            </div>
+            <div style="margin-top:8px;font-size:14px;">
+                🥬 食材：
+                ${recipe.mainIngredients
+                    .map(item => item.name)
+                    .join("、")}
+            </div>
+            <div style="margin-top:5px;font-size:14px;color:#666;">
+                🧂 调料：
+                ${recipe.seasonings
+                    .map(item => item.name)
+                    .join("、")}
+            </div>
+        </div>
+        `;
+        card.onclick=()=>{
+            showRecipe(recipe.id);
+        };
+        menuList.appendChild(card);
+    });
+}
+renderRecipes(recipes);
+function filterRecipes(type){
+    document
+        .querySelectorAll(".filter-btn")
+        .forEach(btn=>{
+            btn.classList.remove("active");
         });
-        function showRecipe(id) {
-            const recipe =
-                recipes.find(r => r.id === id);
-            const detail =
-                document.getElementById("recipe-detail");
-            detail.innerHTML = `
-                <h2>${recipe.name}</h2>
-                <p>⏱ 制作时间：${recipe.cookTime}</p>
-                <img src="${recipe.image}">
-                <h3>🥗 食材</h3>
-                <ul>
-                    ${recipe.ingredients.map(item => `
-                        <li>${item.name}：${item.amount}</li>
-                    `).join("")}
-                </ul>
-                <h3>👨‍🍳 制作步骤</h3>
-                <ol>
-                    ${recipe.steps.map(step => `
-                        <li>${step}</li>
-                    `).join("")}
-                </ol>
-                <h3>⚠️ 注意事项</h3>
-                <ul>
-                    ${recipe.notes
-                        ? recipe.notes.map(note => `
-                            <li>${note}</li>
-                        `).join("")
-                        : "<li>暂无注意事项</li>"
-                    }
-                </ul>
-                <button onclick="backMenu()">
-                    返回菜单
-                </button>
-            `;
-            menuList.style.display = "none";
-            detail.classList.remove("hidden");
-        }
-        function backMenu() {
-            menuList.style.display = "flex";
-            document
-                .getElementById("recipe-detail")
-                .classList.add("hidden");
-        }
-    </script>
+    event.target.classList.add("active");
+    if(type==="全部"){
+        renderRecipes(recipes);
+        return;
+    }
+    const result =
+        recipes.filter(
+            item=>item.category===type
+        );
+    renderRecipes(result);
+}
+function showRecipe(id){
+    const recipe =
+        recipes.find(
+            r=>r.id===id
+        );
+    const detail =
+        document.getElementById("recipe-detail");
+    detail.innerHTML=`
+        <h2>${recipe.name}</h2>
+        <p>
+            🍱 分类：${recipe.category}
+        </p>
+        <p>
+            ⏱ 制作时间：${recipe.cookTime}
+        </p>
+        <img src="${recipe.image}">
+        <h3>🥬 食材</h3>
+        <ul>
+            ${recipe.mainIngredients.map(item=>`
+                <li>
+                    ${item.name}：
+                    ${item.amount}
+                </li>
+            `).join("")}
+        </ul>
+        <h3>🧂 调料</h3>
+        <ul>
+            ${recipe.seasonings.map(item=>`
+                <li>
+                    ${item.name}：
+                    ${item.amount}
+                </li>
+            `).join("")}
+        </ul>
+        <h3>👨‍🍳 制作步骤</h3>
+        <ol>
+            ${recipe.steps.map(step=>`
+                <li>${step}</li>
+            `).join("")}
+        </ol>
+        <h3>⚠️ 注意事项</h3>
+        <ul>
+            ${recipe.notes.map(note=>`
+                <li>${note}</li>
+            `).join("")}
+        </ul>
+        <button
+            class="back-btn"
+            onclick="backMenu()">
+            返回菜单
+        </button>
+    `;
+    menuList.style.display="none";
+    detail.classList.remove("hidden");
+}
+function backMenu(){
+    menuList.style.display="flex";
+    document
+        .getElementById("recipe-detail")
+        .classList.add("hidden");
+}
+</script>
 </body>
 </html>
