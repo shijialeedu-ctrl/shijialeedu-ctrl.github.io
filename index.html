@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我的菜单</title>
+<title>我的菜谱</title>
 <style>
 body{
     font-family: Arial,sans-serif;
@@ -106,7 +106,7 @@ button{
 </style>
 </head>
 <body>
-<h1>🍳 我的菜单</h1>
+<h1>🍳 我的菜谱</h1>
 <div class="filter-box">
     <button class="filter-btn active" onclick="filterRecipes('全部')">
         全部
@@ -118,10 +118,47 @@ button{
         素菜
     </button>
 </div>
+<div style="text-align:center;margin-bottom:20px;">
+    <input
+        type="text"
+        id="search-input"
+        placeholder="🔍 搜索菜名..."
+        style="
+            width:300px;
+            padding:10px;
+            border-radius:8px;
+            border:1px solid #ccc;
+        "
+    >
+</div>
+<div style="text-align:center;margin-bottom:20px;">
+    <button
+        onclick="generateShoppingList()"
+        style="
+            background:#2196F3;
+            color:white;
+        "
+    >
+        🛒 生成购物清单
+    </button>
+</div>
 <div id="menu-list"></div>
 <div id="recipe-detail" class="hidden"></div>
+<div
+    id="shopping-list"
+    class="hidden"
+    style="
+        max-width:800px;
+        margin:20px auto;
+        background:white;
+        padding:25px;
+        border-radius:12px;
+        box-shadow:0 2px 10px rgba(0,0,0,.15);
+    "
+></div>
 <script>
 const recipes = [
+    /* 1 番茄炒蛋*/
 {
     id:1,
     name:"番茄炒蛋",
@@ -153,6 +190,7 @@ const recipes = [
         "番茄炒出汁味道更好。",
     ]   
 },
+    /* 2 蚝油生菜*/
 {
     id:2,
     name:"蚝油生菜",
@@ -183,6 +221,7 @@ const recipes = [
         "水中加几滴油和少量盐可以使煮熟后生菜颜色更绿并保留底味。",
     ]
 },
+    /* 3 香煎脆皮豆腐*/
 {
     id:3,
     name:"香煎脆皮豆腐",
@@ -217,6 +256,7 @@ const recipes = [
         "全程中小火慢煎，不要频繁翻动。",
     ]
 },
+    /* 4 金钱蛋*/
 {
     id:4,
     name:"金钱蛋",
@@ -253,6 +293,7 @@ const recipes = [
         "用线切割鸡蛋不容易破。",
     ]
 },
+    /* 5 宫保鸡丁*/
 {
     id:5,
     name:"宫保鸡丁",
@@ -298,6 +339,7 @@ const recipes = [
         "鸡胸肉丁不要太大。"
     ]
 },
+    /* 6 酱油炒饭*/
 {
     id:6,
     name:"酱油炒饭",
@@ -336,7 +378,14 @@ const recipes = [
 },
 ];
 const menuList =
-document.getElementById("menu-list");
+    document.getElementById("menu-list");
+const recipeDetail =
+    document.getElementById("recipe-detail");
+const shoppingList =
+    document.getElementById("shopping-list");
+const searchInput =
+    document.getElementById("search-input");
+/*渲染相关函数*/
 function renderRecipes(list){
     menuList.innerHTML="";
     list.forEach(recipe=>{
@@ -344,28 +393,41 @@ function renderRecipes(list){
         document.createElement("div");
         card.className="card";
         card.innerHTML=`
+            <div
+                style="
+                    text-align:right;
+                    padding:10px;
+                "
+            >
+                <input
+                    type="checkbox"
+                    class="recipe-check"
+                    value="${recipe.id}"
+                    onclick="event.stopPropagation()"
+                >
+            </div>
             <img src="${recipe.image}">
             <div class="card-content">
-            <h3>${recipe.name}</h3>
-            <div class="category">
-                🍱 分类：${recipe.category}
+                <h3>${recipe.name}</h3>
+                <div class="category">
+                    🍱 分类：${recipe.category}
+                </div>
+                <div class="cook-time">
+                    ⏱ 制作时间：${recipe.cookTime}
+                </div>
+                <div style="margin-top:8px;font-size:14px;">
+                    🥬 食材：
+                    ${recipe.mainIngredients
+                        .map(item => item.name)
+                        .join("、")}
+                </div>
+                <div style="margin-top:5px;font-size:14px;color:#666;">
+                    🧂 调料：
+                    ${recipe.seasonings
+                        .map(item => item.name)
+                        .join("、")}
+                </div>
             </div>
-            <div class="cook-time">
-                ⏱ 制作时间：${recipe.cookTime}
-            </div>
-            <div style="margin-top:8px;font-size:14px;">
-                🥬 食材：
-                ${recipe.mainIngredients
-                    .map(item => item.name)
-                    .join("、")}
-            </div>
-            <div style="margin-top:5px;font-size:14px;color:#666;">
-                🧂 调料：
-                ${recipe.seasonings
-                    .map(item => item.name)
-                    .join("、")}
-            </div>
-        </div>
         `;
         card.onclick=()=>{
             showRecipe(recipe.id);
@@ -373,31 +435,13 @@ function renderRecipes(list){
         menuList.appendChild(card);
     });
 }
-renderRecipes(recipes);
-function filterRecipes(type){
-    document
-        .querySelectorAll(".filter-btn")
-        .forEach(btn=>{
-            btn.classList.remove("active");
-        });
-    event.target.classList.add("active");
-    if(type==="全部"){
-        renderRecipes(recipes);
-        return;
-    }
-    const result =
-        recipes.filter(
-            item=>item.category===type
-        );
-    renderRecipes(result);
-}
 function showRecipe(id){
     const recipe =
         recipes.find(
             r=>r.id===id
         );
     const detail =
-        document.getElementById("recipe-detail");
+        recipeDetail;
     detail.innerHTML=`
         <h2>${recipe.name}</h2>
         <p>
@@ -425,7 +469,7 @@ function showRecipe(id){
                 </li>
             `).join("")}
         </ul>
-        <h3>🥬 备菜</h3>
+        <h3>🔪 备菜</h3>
         <ol>
             ${recipe.steps.prep.map(step=>`
                 <li>${step}</li>
@@ -437,6 +481,32 @@ function showRecipe(id){
                 <li>${step}</li>
             `).join("")}
         </ol>
+        <h3>⏱ 烹饪计时器</h3>
+        <div style="margin-bottom:20px;">
+            <button onclick="startTimer(60)">
+                1分钟
+            </button>
+            <button onclick="startTimer(300)">
+                5分钟
+            </button>
+            <button onclick="startTimer(600)">
+                10分钟
+            </button>
+            <button onclick="startTimer(900)">
+                15分钟
+            </button>
+            <div
+                id="timer-display"
+                style="
+                    margin-top:15px;
+                    font-size:30px;
+                    color:#e74c3c;
+                    font-weight:bold;
+                "
+            >
+                00:00
+            </div>
+        </div>        
         <h3>⚠️ 注意事项</h3>
         <ul>
             ${recipe.notes.map(note=>`
@@ -452,12 +522,140 @@ function showRecipe(id){
     menuList.style.display="none";
     detail.classList.remove("hidden");
 }
+/*搜索和筛选*/
+function searchRecipes(){
+    const keyword =
+        document
+        .getElementById("search-input")
+        .value
+        .trim();
+    const result =
+        recipes.filter(recipe =>
+            recipe.name.includes(keyword)
+        );
+    renderRecipes(result);
+}
+function filterRecipes(type){
+    document
+        .querySelectorAll(".filter-btn")
+        .forEach(btn=>{
+            btn.classList.remove("active");
+        });
+    event.target.classList.add("active");
+    if(type==="全部"){
+        renderRecipes(recipes);
+        return;
+    }
+    const result =
+        recipes.filter(
+            item=>item.category===type
+        );
+    renderRecipes(result);
+}
+/*购物清单*/
+function generateShoppingList(){
+    const checkedBoxes =
+        document.querySelectorAll(
+            ".recipe-check:checked"
+        );
+    if(checkedBoxes.length===0){
+        alert("请先选择菜谱");
+        return;
+    }
+    let ingredients = {};
+    checkedBoxes.forEach(box=>{
+        const recipe =
+            recipes.find(
+                r=>r.id===Number(box.value)
+            );
+        if(recipe){
+            recipe.mainIngredients.forEach(item=>{
+                if(!ingredients[item.name]){
+                    ingredients[item.name] = [];
+            }
+            ingredients[item.name].push(
+                item.amount
+            );
+        });
+    }
+});
+    shoppingList.innerHTML=`
+        <h2>🛒 购物清单</h2>
+        <ul>
+            ${
+                Object.entries(ingredients)
+                .map(([name,amounts])=>`
+                    <li>
+                    ${name}
+                    （${amounts.join(" + ")}）
+                </li>
+                `)
+                .join("")
+            }
+        </ul>
+    `;
+    shoppingList.classList.remove("hidden");
+    shoppingList.scrollIntoView({
+        behavior:"smooth"
+    });
+}
+function closeShoppingList(){
+    shoppingList.classList.add(
+        "hidden"
+    );
+}
+/*计时器*/
+function startTimer(seconds){
+    clearInterval(timerInterval);
+    let remain = seconds;
+    updateTimer(remain);
+    timerInterval =
+    setInterval(()=>{
+        remain--;
+        updateTimer(remain);
+        if(remain <= 0){
+            clearInterval(timerInterval);
+            alert("⏰ 时间到了！");
+        }
+    },1000);
+}
+function updateTimer(seconds){
+    const min =
+        String(
+            Math.floor(seconds/60)
+        ).padStart(2,"0");
+    const sec =
+        String(
+            seconds%60
+        ).padStart(2,"0");
+    const display =
+        document.getElementById(
+            "timer-display"
+        );
+    if(display){
+        display.textContent =
+            `${min}:${sec}`;
+    }
+}
+/*页面控制*/
 function backMenu(){
     menuList.style.display="flex";
-    document
-        .getElementById("recipe-detail")
-        .classList.add("hidden");
+    recipeDetail.classList.add(
+        "hidden"
+    );
 }
+function init(){
+
+    renderRecipes(recipes);
+
+    searchInput.addEventListener(
+        "input",
+        searchRecipes
+    );
+
+}
+init();
+let timerInterval;
 </script>
 </body>
 </html>
