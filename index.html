@@ -83,11 +83,12 @@ h1{
     color:#666;
     font-size:14px;
 }
-.timer-buttons{
+.timer-container{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:10px;
     margin-bottom:15px;
+    font-size:15px;
 }
 #recipe-detail{
     max-width:800px;
@@ -533,7 +534,6 @@ function showRecipe(id){
                 "
             >
                 00:00
-            </div>
         </div>        
         <h3>⚠️ 注意事项</h3>
         <ul>
@@ -585,6 +585,7 @@ function searchRecipes(){
             )
         );
     renderRecipes(result);
+    updateRecipeCount(result);
 }
 function filterRecipes(type){
     document
