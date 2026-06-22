@@ -40,12 +40,10 @@ h1{
     margin:auto;
 }
 @media (min-width:768px){
-
     #menu-list{
         grid-template-columns:
             repeat(auto-fill,minmax(220px,1fr));
     }
-
 }
 .card{
     width:100%;
@@ -84,6 +82,12 @@ h1{
 .ingredient-count{
     color:#666;
     font-size:14px;
+}
+.timer-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:15px;
 }
 #recipe-detail{
     max-width:800px;
@@ -505,7 +509,7 @@ function showRecipe(id){
             `).join("")}
         </ol>
         <h3>⏱ 烹饪计时器</h3>
-        <div style="margin-bottom:20px;">
+        <div class="timer-container">
             <button onclick="startTimer(60)">
                 1分钟
             </button>
@@ -518,7 +522,8 @@ function showRecipe(id){
             <button onclick="startTimer(900)">
                 15分钟
             </button>
-            <div
+        </div>
+        <div
                 id="timer-display"
                 style="
                     margin-top:15px;
