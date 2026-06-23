@@ -133,6 +133,9 @@ button{
     <button class="filter-btn" onclick="filterRecipes('素菜')">
         素菜
     </button>
+    <button class="filter-btn" onclick="filterRecipes('其他')">
+        其他
+    </button>
 </div>
 <div style="text-align:center;margin-bottom:20px;">
     <input
@@ -401,6 +404,88 @@ const recipes = [
     ]
     },
     notes:[
+        "炒饭时锅中油比炒菜时锅中油少。"
+    ]
+},
+ /* 7 麻辣香锅*/
+{
+    id:7,
+    name:"麻辣香锅",
+    category:"荤菜",
+    cookTime:"30分钟",
+    image:"images/MLXG.jpg",
+    mainIngredients:[
+        { name: "金针菇", amount: "适量" },
+        { name: "西兰花", amount: "适量" },
+        { name: "生菜", amount: "1个" },
+        { name: "豆皮", amount: "适量" },
+        { name: "豆泡", amount: "适量" },
+        { name: "宽粉", amount: "3-5根" },
+        { name: "方便面", amount: "1袋" },
+        { name: "火锅丸子", amount: "8-10个" },
+        { name: "蟹棒", amount: "3-5个" },
+        { name: "虾仁", amount: "3-5个" },
+        { name: "干辣椒", amount: "适量" },
+        { name: "大蒜", amount: "3瓣" },
+        { name: "生姜", amount: "1块" },
+        { name: "葱", amount: "1根" },                       
+    ],
+    seasonings:[
+        { name: "香锅料", amount: "1块" },
+        { name: "生抽", amount: "1勺" },
+        { name: "老抽", amount: "1勺" },
+        { name: "蚝油", amount: "1勺" },
+        { name: "食盐", amount: "适量" },
+        { name: "白糖", amount: "适量" },
+        { name: "鸡精", amount: "适量" },
+    ],
+    steps:{
+    prep:[
+        "烧水添少量油盐，煮熟蔬菜和丸子等备用。",
+        "干辣椒、葱、姜和蒜切片备用。",
+    ],
+    cook:[
+        "热锅凉油，待油红后加入干辣椒、葱、姜和蒜爆香。",
+        "随后放香锅料炒出香味。",
+        "丸子打底，铺上蔬菜等不停翻炒。",
+        "加入生抽、老抽和蚝油各一勺，食盐、白糖和鸡精适量不停翻炒。",
+        "翻炒均匀后出锅。",
+    ]
+    },
+    notes:[
+        "如果使用香锅料不需要加油，如果使用火锅料需要多加一些油。"
+    ]
+},
+ /* 8 火锅低卡蘸料*/
+{
+    id:8,
+    name:"火锅低卡蘸料",
+    category:"其他",
+    cookTime:"10分钟",
+    image:"images/HGDKZL.jpg",
+    mainIngredients:[
+        { name: "蒜末", amount: "适量" },
+        { name: "小米辣", amount: "适量" },
+        { name: "葱", amount: "适量" },
+        { name: "香菜", amount: "适量" },
+        { name: "芝麻", amount: "适量" },                      
+    ],
+    seasonings:[
+        { name: "生抽", amount: "3勺" },
+        { name: "醋", amount: "2勺" },
+        { name: "香油", amount: "半勺" },
+        { name: "凉白开", amount: "2勺" },
+    ],
+    steps:{
+    prep:[
+        "葱、蒜、香菜和小米辣切末备用。",
+    ],
+    cook:[
+        "碗中加入葱、蒜、香菜和小米辣末和芝麻，随后加入生抽3勺、醋2勺、香油半勺。",
+        "加入凉白开2勺搅拌均匀即可。",
+    ]
+    },
+    notes:[
         "无。"
     ]
 },
@@ -559,6 +644,10 @@ function updateRecipeCount(list){
         list.filter(
             item=>item.category==="素菜"
         ).length;
+    const otherCount =
+        list.filter(
+            item=>item.category==="其他"
+        ).length;
     document.getElementById(
         "recipe-count"
     ).innerHTML =
@@ -566,6 +655,7 @@ function updateRecipeCount(list){
         🍽 共 ${list.length} 道菜
         ｜🥩 荤菜 ${meatCount}
         ｜🥬 素菜 ${vegCount}
+        ｜🥣 其他 ${otherCount}
         `;
 }
 /*搜索和筛选*/
